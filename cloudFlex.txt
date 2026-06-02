@@ -1,0 +1,246 @@
+struct Request{
+   string eventId ; 
+   string vmId ; 
+   string vmType ; // GENERAL // GPU
+   string owner ;
+   string priority ;  // P1 , P2 ,P3
+   int arrivalOrder ; 
+
+   //constructor 
+   Request(string eId , string id, string name , string type, string pr, int order){
+   eventId = eId ;
+   vmId = id ;
+   owner = name; 
+   vmType = type ;
+   priority = pr ;
+   arrivalOrder = order ; 
+  }
+};
+
+struct Slot{
+   string dc ;
+   string slotId ;
+   string type ;
+   bool occupied ;
+   string owner ;
+   string vmId ;
+ 
+   //constructor
+   Slot(string dataCenter , string id ,string slotType){
+     dc = dataCenter ;
+     slotId = id ;
+     type = slotType;
+     occupied = false ;
+     owner = "";
+     vmId = "";
+    }
+     string fullSlotName(){
+       return dc+"-"+slotId;
+     }
+     bool isfree(){
+       return !occupied;
+     }
+}; 
+
+struct Allocation{
+   string owner ;
+   string slotName;
+   string vmType;
+    Allocation(string name, string slot, string type) {
+        owner = name;
+        slotName = slot;
+        vmType = type;
+    }
+};
+
+// priority helper function
+int priorityValue(string p ){
+  if(p == "P1") return 1 ;
+ 
+  if(p == "P2") return 2 ;
+  
+  return 3 ;
+ }
+
+//comparator 
+struct CompareRequest{
+ bool operator()(const Request &a , const Request &b){
+   int pa = priorityValue(a.priority);
+   int pb = priorityValue(b.priority); 
+   if(pa == pb){
+     return a.arrivalOrder > b.arrivalOrder;
+   }
+   return pa > pb;
+ }
+};
+
+class CloudFlex{ 
+  private :
+  vector<Slot>slots;
+  priority_queue<Request,vector<Request>,CompareRequest>pending;
+  unordered_map<string,Allocation>lookup;
+  public:
+  //constructor 
+  CloudFlex(){
+   //dc 1
+   slots.push_back(Slot("DC1","G1","GENERAL"));
+   slots.push_back(Slot("DC1","G2","GENERAL"));
+   slots.push_back(Slot("DC1","G3","GENERAL"));
+   slots.push_back(Slot("DC1","P1","GPU"));
+   slots.push_back(Slot("DC1","P2","GPU"));
+   //dc 2
+   slots.push_back(Slot("DC2","G1","GENERAL"));
+   slots.push_back(Slot("DC2","G2","GENERAL"));
+   slots.push_back(Slot("DC2","G3","GENERAL"));
+   slots.push_back(Slot("DC2","P1","GPU"));
+   slots.push_back(Slot("DC2","P2","GPU"));
+  }
+
+  // methods 
+ 
+  //add request 
+  void addRequest(Request req){
+ // print added line
+ cout << req.eventId << " : " << "Request added " <<" → " << req.vmId <<" | "<< req.owner << " | " << req.vmType << " | " << req.priority ;
+ // push into pending 
+ pending.push(req);
+  }
+
+  //dispatch operations
+  void dispatchAll(){
+
+   while(!pending.empty()){
+    Request r = pending.top();
+    pending.pop();
+    bool allocated = false;
+
+    //scan all slots and dispatch to the nearest
+    for(auto &slot : slots){
+     if(slot.isfree() && slot.type == r.vmType){
+      allocated = true ;
+      slot.occupied = true;
+      slot.owner = r.owner;
+      slot.vmId = r.vmId;
+       // update loopup
+      lookup[r.vmId] = Allocation(r.owner,slot.fullSlotName(),r.vmType);
+      // print 
+     cout << "Dispatched" << " → " << r.vmId << " (" << r.owner << ") " <<"provisioned at " << slot.fullSlotName()<<endl ;
+
+      break ; 
+    }
+ }
+     if(!allocated) {
+
+            cout << "No available "
+                 << r.vmType
+                 << " slot for "
+                 << r.vmId
+                 << endl;
+   }
+ }
+ }
+
+//delete vm
+void deleteVM(string eventId, string vmId, string owner) {
+    if(lookup.find(vmId) == lookup.end()) {
+        return;
+    }
+
+    string slotName = lookup[vmId].slotName;
+
+    for(auto &slot : slots) {
+        if(slot.fullSlotName() == slotName) {
+            cout << eventId << ": "
+                 << vmId
+                 << " (" << owner << ") deleted from "
+                 << slot.fullSlotName()
+                 << " [slot freed]"
+                 << endl;
+
+            slot.occupied = false;
+            slot.owner = "";
+            slot.vmId = "";
+
+            lookup.erase(vmId);
+
+            return;
+        }
+    }
+}
+
+//lookup 
+void lookupVM(string vmId) {
+    if(lookup.find(vmId) == lookup.end()) {
+        cout << "Lookup " << vmId
+             << " → Request not found"
+             << endl;
+        return;
+    }
+
+    Allocation a = lookup[vmId];
+
+    cout << "Lookup " << vmId
+         << " → "
+         << a.owner
+         << " | "
+         << a.slotName
+         << " | "
+         << a.vmType
+         << endl;
+}
+
+//print report
+void printReport() {
+    vector<string> dcs = {"DC1", "DC2"};
+
+    for(string dc : dcs) {
+        cout << "DC " << dc << ": ";
+
+        for(auto &slot : slots) {
+            if(slot.dc == dc) {
+                cout << slot.slotId << "[";
+
+                if(slot.occupied) {
+                    cout << slot.owner;
+                }
+                else {
+                    cout << "free";
+                }
+
+                cout << "] ";
+            }
+        }
+
+        cout << endl;
+    }
+}
+};
+int main() {
+    CloudFlex cloud;
+
+    cloud.addRequest(Request("E01", "VM-01", "Ananya", "GPU", "P1", 1));
+    cloud.addRequest(Request("E02", "VM-02", "Karthik", "GENERAL", "P2", 2));
+    cloud.addRequest(Request("E03", "VM-03", "Iqbal", "GENERAL", "P3", 3));
+    cloud.addRequest(Request("E04", "VM-04", "Ritu", "GPU", "P1", 4));
+
+    cloud.dispatchAll();
+
+    cout << endl;
+
+    cloud.deleteVM("E05", "VM-02", "Karthik");
+
+    cloud.addRequest(Request("E06", "VM-05", "Sanjay", "GENERAL", "P2", 5));
+
+    cloud.dispatchAll();
+
+    cloud.lookupVM("VM-01");
+    cloud.lookupVM("VM-05");
+    cloud.lookupVM("VM-99");
+
+    cout << endl;
+
+    cloud.printReport();
+
+    return 0;
+}
+
