@@ -1,0 +1,32 @@
+class Student{
+
+  private :
+  int rollid;
+  string name ;
+  static int nextRollid ;
+  static int StudentCount ;
+
+  public : 
+  Student(string name){
+   this->name = name ;
+   rollid = nextRollid ;
+   nextRollid++;
+   StudentCount ++;
+ }
+  static int getStudentCount(){
+    return StudentCount;
+  }
+  int getRollid(){
+    return rollid;
+  }
+};
+ int Student::nextRollid= 1 ;
+ int Student::StudentCount = 0 ;
+int main(){
+  Student s1("anshika");
+  Student s2("janvi");
+  Student s3("naman");
+  cout << s1.getRollid() <<endl;
+  cout << "Total Students : " << Student::getStudentCount() << endl;
+}
+ 
