@@ -1,0 +1,54 @@
+#include <string>
+#include <iostream>
+using namespace std ;
+class Employee{
+  private :
+  string id ;
+  string name ;
+  int salary ;
+  public:
+  //constructor 
+  Employee(string id , string name , int salary){
+    this->id = id ;
+    this->name = name ;
+    this->salary = salary ;
+  }
+ // methods (getters and setters)
+ string getName(){
+  return name ;
+ }
+ string getEmployerId(){ 
+   return id; 
+ }
+ int getSalary(){
+  return salary;
+ } 
+ void setSalary(int val){
+  if(val < 0){
+   cout << "salary cannot be negative"<<endl;
+  }
+  else{
+   salary = val ;
+  cout << "salary set to : " << val <<endl;
+  }
+ }
+ void setName(string s){
+  if(s == ""){
+   cout << "name cannot be left empty" <<endl ;
+  }
+  else{
+   name = s ;
+  cout << "name set to : " << s <<endl; 
+  }
+ }
+ void setId(string t){
+  if(t == ""){
+   cout << "employee id cannot be left empty" <<endl ;
+  }
+  else{
+   id = t ;
+  cout << "id set to : " << t <<endl; 
+  }
+ }
+
+};
