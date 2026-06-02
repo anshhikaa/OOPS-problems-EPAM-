@@ -1,0 +1,165 @@
+class Node {
+  public :
+  //attributes 
+  string address ;
+  Node* prev ; 
+  Node* next ;
+
+  //constructor 
+  Node(string addr){
+  address = addr ;
+  prev = nullptr ;
+  next = nullptr ;
+
+  }
+
+};
+
+class DeliveryRoute{
+  private :
+  //attributes
+  Node * head;
+  Node * tail ;
+
+  public :
+  //constructor
+  DeliveryRoute(){
+   head = nullptr ;
+   tail = nullptr;
+  }
+
+  //methods 
+
+  void addStop(string addr){
+   //create node ;
+   Node * newNode = new Node(addr);
+     // if empty newNode becomes the first node 
+     if(head == nullptr && tail == nullptr){
+        head = newNode ;
+        tail = newNode ;
+     }
+     else{
+      //route already exists
+       tail->next = newNode ;
+       newNode->prev = tail ;
+       tail = newNode ;
+     }
+  }
+
+  void addUrgentStop(string addr){
+  //create node ;
+   Node * newNode = new Node(addr);
+      // if empty newNode becomes the first node 
+     if(head == nullptr && tail == nullptr){
+        head = newNode ;
+        tail = newNode ;
+     }
+     else{
+    newNode->next = head ;
+    newNode ->prev= nullptr ;
+    head->prev = newNode;
+    head = newNode ;
+    }
+  }
+
+  string deliverNext(){
+    // if empty 
+    if(head == nullptr){  
+     return "";
+    }
+    Node * temp = head ; 
+    string addressOfNodeDelivered = temp->address;
+    
+    // if one node 
+    if(head == tail){
+     head = nullptr ;
+     tail = nullptr;
+    }
+    
+    // more than one node 
+    else{ 
+    head = head->next;
+    head->prev = nullptr ;
+    }
+  delete temp ;
+  return addressOfNodeDelivered ;
+  }
+  
+  string cancelLastStop(){
+  // if empty 
+    if(head == nullptr){  
+     return "";
+    }
+    Node * temp = tail ; 
+    string addressOfNodeCancelled = temp->address;
+    // if one node 
+    if(head == tail){
+     head = nullptr ;
+     tail = nullptr;
+    }
+    else{
+    tail = tail->prev;
+    tail->next =nullptr ;
+    }
+   delete temp;
+  return addressOfNodeCancelled;   
+  }
+  
+  string peekNext(){
+    // if empty 
+    if(head == nullptr){  
+     return "None";
+     }
+   //if route exists
+   return head->address;
+  }
+  
+  string peekLast(){
+   // if empty 
+    if(head == nullptr){  
+     return "None";
+     }
+   //if route exists
+   return tail->address;
+  }
+};
+int main() {
+
+    DeliveryRoute route;
+
+    // Initial route
+    route.addStop("Karol Bagh");
+    route.addStop("Lajpat Nagar");
+    route.addStop("Connaught Place");
+
+    // add urgent stop
+    route.addUrgentStop("Nehru Place");
+
+    // deliver next
+    cout << route.deliverNext() << endl;
+
+    // add normal stop
+    route.addStop("Dwarka");
+
+    // cancel last stop
+    cout << route.cancelLastStop() << endl;
+
+    // peek operations
+    cout << route.peekNext() << endl;
+
+    cout << route.peekLast() << endl;
+
+    // deliver next two
+    cout << route.deliverNext() << endl;
+
+    cout << route.deliverNext() << endl;
+
+    // cancel last
+    cout << route.cancelLastStop() << endl;
+
+    // route empty now
+    cout << route.deliverNext() << endl;
+
+    return 0;
+}
+
