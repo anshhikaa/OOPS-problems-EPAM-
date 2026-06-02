@@ -1,0 +1,39 @@
+class BankAccount{
+  //attributes 
+  private : 
+  string accountNumber ;
+  string accountHolderName ;
+  double balance;
+  //constructor 
+  public : 
+  BankAccount(string accNum , string name ){
+   accountNumber = accNum ;
+   accountHolderName = name ;
+   balance = 0.0 ;
+ }
+
+ //methods 
+ void deposit(int depositedMoney){
+  balance += depositedMoney ;
+   cout << "Money deposited , balance updated successfully " <<endl;
+ }
+
+ void withdraw(int requestMoney){
+ if(balance == 0.0){
+   cout << "the account has 0 balance , money can't be withdrawn"<<endl;
+ }
+ else {
+  if(balance < requestMoney ){
+   cout << "not enough balance in the account " <<endl;
+  }
+  else{
+   balance -= requestMoney;
+   cout << "Money withdrawn , balance updated successfully " <<endl;
+  }
+ }
+ }
+
+ void displayBalance(){
+  cout << "Balance : " << balance <<endl;
+ } 
+};
