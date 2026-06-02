@@ -1,0 +1,238 @@
+class Vehicle{
+ //attributes 
+ protected:
+ string registrationNumber ; 
+ string ownerName ;
+ public : 
+ //constructor 
+ Vehicle(string regNo, string owner){
+  registrationNumber = regNo;
+  ownerName = owner;
+  }
+//methods 
+  string getRegistrationNumber(){
+  return registrationNumber;
+ }
+ string getOwnerName(){
+  return ownerName ;
+ }
+ virtual string getType() = 0 ;
+};
+
+class Car : public Vehicle{
+ public : 
+ Car(string regNo, string owner): Vehicle( regNo, owner){}
+ string getType() override{
+  return "Car";
+ }
+};
+
+class Bike : public Vehicle{
+ public : 
+ Bike(string regNo, string owner): Vehicle( regNo, owner){}
+ string getType() override{
+  return "Bike";
+ }
+};
+
+class ParkingSlot{
+ private :
+ string floorId;
+ string slotId;
+ string type ;
+ bool occupied ;
+ string ownerName ;
+ string registrationNumber;
+ public:
+//constructor 
+ ParkingSlot(string floor , string slot , string vehicleType){
+  floorId = floor ;
+  slotId = slot ;
+  type = vehicleType;
+  occupied = false ;
+  ownerName = "";
+  registrationNumber = "";
+  } 
+  //methods 
+  bool isfree(){
+  return !occupied ;
+  }
+  string getFullSlotName(){
+  return floorId+"-"+slotId ;
+  }
+  string getType(){
+   return type ;
+  }
+  string getRegistrationNumber(){
+  return registrationNumber;
+  }
+  string getOwnerName(){
+  return ownerName ;
+  }
+  string getSlotId(){
+  return slotId;
+  }
+  string getFloorId(){
+  return floorId ;
+  }
+  void parkVehicle(Vehicle * vehicle){
+  occupied = true ;
+  ownerName = vehicle->getOwnerName();
+  registrationNumber = vehicle->getRegistrationNumber() ; 
+  } 
+  void freeSlot(){
+  occupied  =false ;
+  ownerName = "";
+  registrationNumber = "";
+ }
+};
+ class ParkingLot{
+  private :
+  vector<ParkingSlot>slots ;
+  unordered_map<string,ParkingSlot*>vehicleLookup;
+  public :
+  //all slots enter
+  // floor 1
+  ParkingLot(){
+  slots.push_back(ParkingSlot("F1","C1","Car"));
+  slots.push_back(ParkingSlot("F1","C2","Car"));
+  slots.push_back(ParkingSlot("F1","C3","Car"));
+  slots.push_back(ParkingSlot("F1","B1","Bike"));
+  slots.push_back(ParkingSlot("F1","B2","Bike"));
+  // floor 2
+  slots.push_back(ParkingSlot("F2","C1","Car"));
+  slots.push_back(ParkingSlot("F2","C2","Car"));
+  slots.push_back(ParkingSlot("F2","C3","Car"));
+  slots.push_back(ParkingSlot("F2","B1","Bike"));
+  slots.push_back(ParkingSlot("F2","B2","Bike"));
+}
+  //methods 
+
+ //park vehicle
+ void parkVehicle(string eventId , Vehicle*vehicle){
+//iterate slots 
+for(auto &slot : slots){
+ //check availabiliy & vehicle compatibitility
+ if(slot.isfree() && vehicle->getType() == slot.getType()){
+ //occupy slot & update look up map 
+ slot.parkVehicle(vehicle);
+ vehicleLookup[vehicle->getRegistrationNumber()] = &slot ;
+//print 
+cout << eventId << ": "
+     << vehicle->getRegistrationNumber()
+     << " (" << vehicle->getOwnerName()
+     << ") parked at "
+     << slot.getFullSlotName()
+     << endl;
+return ; 
+ }
+ }
+
+ }
+
+ //leave vehicle
+ void leaveVehicle(string eventId , string regNo , string ownerName){
+ // check if regno present in lookup or not
+ //found
+ if(vehicleLookup.find(regNo) != vehicleLookup.end()){
+  ParkingSlot * slot = vehicleLookup[regNo];
+  cout << eventId << ": "
+             << regNo
+             << " (" << ownerName
+             << ") left from "
+             << slot->getFullSlotName()
+             << " [slot freed]"
+             << endl;
+
+//free
+slot->freeSlot();
+//erase from map 
+vehicleLookup.erase(regNo);
+ }
+}
+
+//lookup vehicle 
+void lookupVehicle(string regNo){
+ //find vehicle
+ // not found
+ if(vehicleLookup.find(regNo) == vehicleLookup.end()){
+  cout << "Lookup " << regNo << " → Vehicle not found " <<endl ;
+  return ; 
+ }
+
+ //found 
+ ParkingSlot * slot = vehicleLookup[regNo];
+ cout << "Lookup " << regNo <<" → " << slot->getOwnerName() << " | " << slot->getFullSlotName()<<" | " << slot->getType() <<endl ;
+
+ }
+
+//print report 
+void printReport(){
+ vector<string>floors = {"F1","F2"};
+ for(auto floor : floors){
+cout <<"Floor " << floor << ": ";
+ for(auto &slot :slots){
+ if(slot.getFloorId() == floor){
+ cout << slot.getSlotId() <<"[" ;
+ if(slot.isfree()){
+ cout << "free" ;
+ }
+ else{
+ cout << slot.getOwnerName() ;
+ }
+cout << "]";
+ }
+}
+cout <<endl;
+ }
+}
+ };
+int main() {
+
+    ParkingLot lot;
+
+    Car c1("KA-01-AB-1234", "Arjun Mehta");
+    Bike b1("KA-05-CD-5678", "Sara Khan");
+    Car c2("KA-03-EF-9012", "Ravi Kumar");
+    Car c3("KA-02-GH-3456", "Priya Nair");
+    Bike b2("KA-09-IJ-7890", "Dev Sharma");
+    Car c4("KA-07-KL-2345", "Meena Iyer");
+
+    lot.parkVehicle("E01", &c1);
+
+    lot.parkVehicle("E02", &b1);
+
+    lot.parkVehicle("E03", &c2);
+
+    lot.parkVehicle("E04", &c3);
+
+    lot.parkVehicle("E05", &b2);
+
+    lot.leaveVehicle(
+        "E06",
+        "KA-01-AB-1234",
+        "Arjun Mehta"
+    );
+
+    lot.parkVehicle("E07", &c4);
+
+    lot.leaveVehicle(
+        "E08",
+        "KA-05-CD-5678",
+        "Sara Khan"
+    );
+
+    cout << endl;
+
+    lot.lookupVehicle("KA-03-EF-9012");
+
+    lot.lookupVehicle("KA-07-KL-2345");
+
+    lot.lookupVehicle("KA-99-ZZ-0000");
+
+    cout << endl;
+
+    lot.printReport();
+
+    return 0;
+}
