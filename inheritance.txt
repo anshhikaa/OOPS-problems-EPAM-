@@ -1,0 +1,65 @@
+//parent class
+class Vehicle{
+   protected :
+   string vehicleId ;
+   string vehicleName;
+   public :
+   Vehicle(string name ,string id){
+    this->vehicleName = name;
+    this->vehicleId = id ; 
+   }
+   virtual void start(){
+     cout << " engine start" <<endl ;
+   }
+   virtual void stop(){ 
+     cout << "engine stop" <<endl ;
+   }
+   void displayInfo() {
+    cout << vehicleName << " "
+         << vehicleId << endl;
+   }
+};
+
+//child class
+class Car : public Vehicle{
+  private:
+  string colour ; 
+  int seat;
+  public:
+ Car(string vehicleName , string vehicleId , string colour , int seat): Vehicle(vehicleName ,vehicleId), colour(colour),seat(seat){}
+
+  void start() override{
+    Vehicle::start();
+    cout <<"car's engine is starting" <<endl;
+  }
+   void stop() override{
+   Vehicle::stop();
+    cout <<"car's engine is stoping" <<endl;
+  } 
+   void turnonAC(){
+    cout << "ac on " <<endl;
+   }
+  
+};
+class Bike : public Vehicle{
+  public:
+ Bike(string vehicleName , string vehicleId ): Vehicle(vehicleName, vehicleId){}
+
+  void start() override{
+   Vehicle::start();
+    cout <<"bike's engine is starting" <<endl;
+  }
+   void stop() override{
+    Vehicle::stop();
+    cout <<"bike's engine is stoping" <<endl;
+  }
+  
+};
+int main(){
+  Vehicle* v1 = new Car("Honda City", "C123", "White", 4);
+  Vehicle* v2 = new Bike("Yamaha", "B456");
+
+  v1->start();  // calls Car::start
+  v2->start();  // calls Bike::start
+
+}
