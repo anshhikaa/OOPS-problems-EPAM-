@@ -1,0 +1,24 @@
+// a class declared final would not inherit its attributes and methods to any other class
+class Constants final{
+  public :
+  int getMaxUser() final{
+     return 100;
+  }
+};
+
+// class user : public Constants{}; // ERROR AS FINAL CLASS CANNOT BE INHERITED
+
+class Account{
+ public :
+  virtual void DisplayBalance() final{
+    cout "displaying balance\n"; 
+  }
+};
+
+class SavingsAccount : public Account{
+ public:
+   //compilation error as a method with final keyword cannot be overriden 
+   //void DisplayBalance() override {
+   //     cout << "Savings balance\n";
+   //}
+};
