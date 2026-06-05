@@ -1,0 +1,56 @@
+class Animal{
+ protected :
+  string breed ; 
+  int age ;
+  
+ public :
+   Animal(string breed , int age ) : breed(breed) , age(age){}
+  
+ string getBreed(){
+    return breed;
+ }
+ int getAge(){
+    return age ;
+ }
+ virtual string makeSound() = 0 ; 
+};
+
+class Dog : public Animal {
+  public :
+  Dog(string breed, int age) : Animal(breed,age){}
+
+  string makeSound() override(){
+    return "Woof Woof" ;
+  }
+};
+
+class Cat : public Animal{
+  public :
+  Cat(string breed, int age) : Animal(breed,age){}
+
+  string makeSound() override(){
+    return "Meow Meow" ;
+  }
+
+};
+
+class Cow : public Animal{
+  public :
+  Cow(string breed, int age) : Animal(breed,age){}
+
+  string makeSound() override(){
+    return "Moo Moo" ;
+  }
+};
+
+int main(){
+ vector<Animal*>animals;
+ animals.push_back(new Dog("german sherpard",3));
+ animals.push_back(new Cat("Persian",5));
+ animals.push_back(new Cow("Angus",6));
+
+ for(auto animal : animals){
+    cout << animal->makeSound() << endl;
+}
+
+}
