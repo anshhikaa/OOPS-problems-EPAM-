@@ -1,0 +1,28 @@
+class Calculator {
+  public:
+  //method overloading for add()
+ 
+  //returns int and takes 2 parameters
+  int add(int a , int b){
+    return a+b ;
+  }
+
+  //returns double and takes 2 parameters
+ double add(double a , double b ){
+    return a+b ;
+ }
+
+ // returns int and takes 3 parameters
+ int add(int a , int b ,int c){
+   return a+b+c;
+ }
+ 
+};
+
+int main(){
+  Calculator c;
+  cout << c.add(1,2) <<endl;
+  cout << c.add(1.2,3.4) <<endl;
+  cout << c.add(9,5,6) <<endl;
+
+}
