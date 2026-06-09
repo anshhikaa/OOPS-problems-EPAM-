@@ -1,0 +1,51 @@
+#include <iostream>
+using namespace std;
+
+//interface in cpp is implemented using abstract class
+class PaymentGateway{
+  public:
+  virtual void processPayment()= 0 ;
+
+  virtual ~PaymentGateway() {}
+
+};
+
+class CreditCardPayment : public PaymentGateway{
+
+  private:
+  string cardNumber ;
+  string cardOwnerName ;
+
+  public :
+  CreditCardPayment(string cardNo, string name): PaymentGateway(), cardNumber(cardNo),cardOwnerName(name){}
+
+  void processPayment() override{
+    cout << "payment via credit card " <<endl;
+  }
+
+};
+
+class UPIPayment : public PaymentGateway{
+
+  private :
+  string upiId ; 
+  string upiPlatform ; 
+ 
+  public :
+  UPIPayment(string id , string platform): PaymentGateway(),upiId(id),upiPlatform(platform){}
+
+  void processPayment() override{
+   cout << "payment via upi platform " <<endl;
+  }
+ 
+};
+
+int main(){ 
+  PaymentGateway * p1 = new CreditCardPayment("1234AK","akansha");
+  PaymentGateway * p2 = new UPIPayment("456@anshika","googlePay");
+  p1->processPayment();
+  p2->processPayment();
+
+  delete p1;
+  delete p2;
+}
