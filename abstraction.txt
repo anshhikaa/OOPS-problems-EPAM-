@@ -1,0 +1,54 @@
+#include <iostream>
+using namespace std;
+
+class Shape{
+  protected:
+  //abstract class- atleast one pure virtual function 
+  Shape(){
+   }
+
+  public :
+  virtual double calculateArea() const = 0;
+
+  virtual ~Shape() = default ;
+   
+};
+
+class Circle : public Shape{
+  private:
+  int radius ;
+  const double pi = 3.14159;
+
+  public:
+  Circle(int radius): Shape(),radius(radius){
+  }
+  
+  double calculateArea() const override{
+    return pi*radius*radius;
+  }
+
+};
+
+class Rectangle : public Shape{
+  private :
+  int length ;
+  int width ; 
+
+  public:
+  Rectangle(int length , int width): Shape(),length(length),width(width){}
+
+  double calculateArea() const override{ 
+     return length*width; 
+  }
+
+};
+
+
+int main(){
+  Shape* c = new Circle(3);
+  Shape * r = new Rectangle(4,5);
+  cout << c->calculateArea() << endl;
+  cout << r->calculateArea() << endl;
+  delete c ;
+  delete r ;
+}
