@@ -1,0 +1,47 @@
+#include<iostream>
+#include<string>
+using namespace std ;
+class Product{
+ private :
+ string productId ;
+ string productName;
+ int cost ;
+ string category ;
+ bool available ;
+ int quantity  ;
+
+ public :
+ //constructor with default values 
+ Product(): productId("null"),
+          productName("null"),
+          cost(0),
+          category("null"),
+          available(false),
+          quantity(0)
+   {}
+
+ //constructor with all fields
+ Product(string productId, string productName , int cost, string category , int quantity){
+  this->productId = productId ;
+  this->productName = productName ;
+  this->cost = cost;
+  this->category = category ;
+  available = true ;
+  this->quantity = quantity ;
+  
+}
+
+ void display(){
+  cout << "id : " << productId << " name : " << productName <<endl;
+  }
+
+};
+
+int main(){
+ Product p1;
+ Product p2("pro1","airfryer",7000,"kitchen appliance",10);
+ p1.display();
+ p2.display();
+
+ return 0 ;
+}
