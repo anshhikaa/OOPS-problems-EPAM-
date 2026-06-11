@@ -1,0 +1,49 @@
+#include<iostream>
+#include<string>
+using namespace std ;
+class Person{
+  protected:
+  string name ;
+  string phoneNo ;
+  string occupation ; 
+  string city ;
+  int age ;
+
+  public :
+  Person(string name ,string phoneNo,string occupation,string city , int age) : name(name) , phoneNo(phoneNo),occupation(occupation),city(city),age(age){}
+
+  string getName(){
+    return name;
+  }
+  string getOccupation(){
+    return occupation;
+  }
+  void setCity(string newCity){
+    city = newCity ;
+   cout << "city updated" <<endl;
+  }
+  int getAge(){
+    return age ;
+  }
+
+};
+
+class Employee : public Person{
+  private :
+  int salary ;
+
+  public :
+  Employee(string name ,string phoneNo,string occupation,string city , int age , int salary): Person( name ,phoneNo,occupation,city ,age), salary(salary) {}
+
+  int getSalary(){
+    return salary ;
+  }
+
+};
+
+int main(){
+  Employee e1("akash","935803498","doctor","bangalore",23,75000);
+ cout << e1.getSalary()<<endl ;
+ 
+ return 0;
+}
