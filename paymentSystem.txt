@@ -1,0 +1,76 @@
+// online payment system supporting cc , upi , wallets
+//inheritance poly interface
+//abstraction layer
+#include<iostream>
+#include<string>
+using namespace std;
+
+ //INTERFACE
+class PaymentStrategy{
+  public:
+ //abstract class , acting as interface for all other classes
+
+  virtual void pay(int amount)= 0;
+
+  virtual ~PaymentStrategy(){}
+};
+
+//class PaymentProcessor{
+   private:
+   PaymentStrategy * strategy;
+   public:
+   PaymentProcessor(PaymentStrategy* strategy) : strategy(strategy){}
+
+   void makePayment(int amount){
+     strategy->pay(amount);
+  }
+  void changeStrategy(PaymentStrategy*     newStrategy){
+        strategy = newStrategy;
+   }
+};
+// CONCRETE STRATERGY
+class CreditCard : public PaymentStrategy{
+  private :
+  string cardNumber ;
+
+  public :
+  CreditCard(string cardNumber):cardNumber(cardNumber){}
+
+  void pay(int amount)override{
+   cout << "payment using credit card successful  : " << amount <<endl;
+  }
+};
+
+
+class UpiPayment: public PaymentStrategy{
+    private :
+    string upiId ;
+ 
+    public :
+    UpiPayment(string upiId):upiId(upiId){}
+
+    void pay(int amount) override{
+      cout <<"upi payment successful of : "<<amount <<endl;
+    }
+};
+
+class Wallets : public PaymentStrategy{
+    public :
+    void pay(int amount)override{
+      cout << "payment via wallets successful of : " << amount <<endl;
+    }
+};
+
+// CONTEXT CLASS
+
+int main(){
+  CreditCard card("ans1234");
+  PaymentProcessor processor(&card);
+  processor.makePayment(500);
+  Wallets wallet;
+  processor.changeStrategy(&wallet);
+  processor.makePayment(400);
+  
+  
+  return 0 ;
+}
