@@ -1,0 +1,47 @@
+//aggregation-weak ownership + has-a relationship
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+class Book{
+  private:
+  string bookTitle ;
+  string authorName;
+  public :
+ Book(string title , string name) : bookTitle (title),authorName(name){}
+
+ string getTitle(){
+  return bookTitle ;
+ }
+
+};
+class Library{
+  vector<Book*>ListOfBooks;
+  public :
+  void addBooks(Book* b){ 
+    ListOfBooks.push_back(b);
+  cout << b->getTitle() << " successfully added to the list of books "<<endl;
+  }
+  void removeBooks(Book*b){
+  auto it = find(ListOfBooks.begin (),ListOfBooks.end(),b);
+    if(it != ListOfBooks.end()){
+   ListOfBooks.erase(it);
+  cout << b->getTitle() << " successfully removed from list of books "<<endl;
+  }
+  else{
+  cout << b->getTitle() << " not found in list of books hence cannot be removed "<<endl;
+  }
+}
+
+};
+
+int main(){
+ Book b1("wings of fire" , "abdul kalam");
+ Book b2("twisted games ","ana hung");
+ Library lib;
+ lib.addBooks(&b1);
+ lib.addBooks(&b2);
+ lib.removeBooks(&b1);
+ return 0 ;
+}
