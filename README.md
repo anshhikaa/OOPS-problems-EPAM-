@@ -2,7 +2,7 @@ Over the past few weeks, I've been building a strong foundation in Object-Orient
 
 Instead of only studying concepts theoretically, I created a dedicated repository where I implemented and practiced each topic through code examples and mini design exercises.
 
-###Topics covered:
+Topics covered:
 • Classes & Objects
 • Constructors and Constructor Overloading
 • Encapsulation
