@@ -1,0 +1,50 @@
+//composition
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+class Item{
+  private :
+  string itemName ;
+  int itemPrice ;
+  public:
+  Item(string itemName, int itemPrice): name(itemName),price(ItemPrice){}
+
+};
+class Customer{
+ private :
+  string name ; 
+  string email ;
+ public :
+  Customer(string name, string email): name(name),email(email){}
+  string getName(){
+   return name ;
+   }
+ 
+};
+
+class Order{
+  private:
+// as order is-a item or order is-a customer doesnt make sense so no need of inheritance
+// order has-a item and order has-a customer makes sense so composition is more relevant than inhertiance here
+  Customer customer ; // composition
+  vector<Item>itemList;//composition
+  public:
+  Order(Customer c , vector<Item>list): customer(c),itemList(list){}
+  void display(){ 
+   cout << "Order placed by " << customer.getName() << endl;
+  } 
+};
+
+int main(){
+ Customer c1("Anshika","anshika@gmail.com");
+ Item i1("iphone 16",50000);
+ Item i2("iphone 17",60000);
+  vector<Item>items;
+ items.push_back(i1);
+ items.push_back(i2);
+ Order o1(c1,items);
+ o1.display();
+
+ return 0 ;
+}
